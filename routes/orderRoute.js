@@ -5,21 +5,20 @@ const Order = require('../models/order');
 const is_live = false;
 const { v4: uuidv4 } = require('uuid');
 const { ObjectId } = require('mongodb');
-const tran_id = new ObjectId().toString();
-const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 router.post('/', async (req, res) => {
     const { userData, productData, totalPrice } = req.body;
     const { fullName, address, mobileNumber, email, district, city, area } = userData;
     const tran_id = uuidv4();
+    const baseURL = process.env.BASE_URL || 'http://localhost:5000'; // Use environment variable for base URL
     const data = {
         total_amount: totalPrice,
         currency: 'BDT',
         tran_id: tran_id,
-        success_url: `https://accessories-arena-server.onrender.com/order/success/${tran_id}`,
-        fail_url: `https://accessories-arena-server.onrender.com/order/fail/${tran_id}`,
-        cancel_url: `https://accessories-arena-server.onrender.com/order/cancel`,
-        ipn_url: `https://accessories-arena-server.onrender.com/order/ipn`,
+        success_url: `${baseURL}/order/success/${tran_id}`,
+        fail_url: `${baseURL}/order/fail/${tran_id}`,
+        cancel_url: `${baseURL}/order/cancel`,
+        ipn_url: `${baseURL}/order/ipn`,
         shipping_method: 'NO',
         product_name: 'Computer',
         product_category: 'Electronic',
@@ -71,6 +70,7 @@ router.post('/', async (req, res) => {
 });
 
 // Success route
+const CLIENTURL=process.env.CLIENT_URL || 'http://localhost:5173';
 router.post('/success/:tranId', async (req, res) => {
     const tranId = req.params.tranId;
     try {
@@ -80,35 +80,30 @@ router.post('/success/:tranId', async (req, res) => {
             { new: true }
         );
         if (order) {
-            res.redirect(`http://localhost:5173/payment/success/${tranId}`);
+            res.redirect(`${CLIENTURL}/payment/success/${tranId}`);
         } else {
             res.status(404).json({ message: 'Order not found' });
         }
     } catch (error) {
         console.error('Error in updating payment status:', error);
         res.status(500).json({ message: error.message });
-        
     }
 });
 
-
-//failedRoute
-router.post('/fail/:tranId',async(req,res)=>{
+// Failed route
+router.post('/fail/:tranId', async (req, res) => {
     const tranId = req.params.tranId;
-    const order = await Order .deleteOne({transactionId:tranId})
+    const order = await Order.deleteOne({ transactionId: tranId });
 
-    try{
-
+    try {
         if (order) {
-            res.redirect(`http://localhost:5173/payment/fail/${tranId}`);
+            res.redirect(`${CLIENTURL}/payment/fail/${tranId}`);
         } else {
             res.status(404).json({ message: 'Order not found' });
         }
-    }
-    catch(error){
+    } catch (error) {
         res.status(500).json({ message: error.message });
     }
-   
-})
+});
 
 module.exports = router;
