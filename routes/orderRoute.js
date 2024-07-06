@@ -5,7 +5,7 @@ const Order = require('../models/order');
 const { v4: uuidv4 } = require('uuid');
 const { ObjectId } = require('mongodb');
 
-const is_live = process.env.NODE_ENV === 'production'; // Determine if live based on environment
+const is_live = process.env.NODE_ENV === 'production';
 const BASE_URL = process.env.BASE_URL || 'http://localhost:5000';
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
 
