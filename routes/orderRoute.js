@@ -91,7 +91,9 @@ router.post('/success/:tranId', async (req, res) => {
             { new: true }
         );
         if (order) {
-            res.redirect(`${CLIENT_URL}/payment/success/${tranId}`);
+            const redirectUrl = `${CLIENT_URL}/payment/success/${tranId}`;
+            console.log("Redirecting to:", redirectUrl);
+            res.redirect(redirectUrl);
         } else {
             res.status(404).json({ message: 'Order not found' });
         }
@@ -108,7 +110,9 @@ router.post('/fail/:tranId', async (req, res) => {
     try {
         const order = await Order.deleteOne({ transactionId: tranId });
         if (order) {
-            res.redirect(`${CLIENT_URL}/payment/fail/${tranId}`);
+            const redirectUrl = `${CLIENT_URL}/payment/fail/${tranId}`;
+            console.log("Redirecting to:", redirectUrl);
+            res.redirect(redirectUrl);
         } else {
             res.status(404).json({ message: 'Order not found' });
         }
