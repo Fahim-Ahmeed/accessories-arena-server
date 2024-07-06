@@ -6,7 +6,10 @@ const is_live = false;
 const { v4: uuidv4 } = require('uuid');
 const { ObjectId } = require('mongodb');
 const tran_id = new ObjectId().toString();
-
+const baseURL = process.env.NODE_ENV === 'production' 
+  ? 'https://accessories-arena-server.onrender.com' 
+  : 'http://localhost:5000';
+  console.log(baseURL)
 router.post('/', async (req, res) => {
     const { userData, productData, totalPrice } = req.body;
     const { fullName, address, mobileNumber, email, district, city, area } = userData;
@@ -15,10 +18,10 @@ router.post('/', async (req, res) => {
         total_amount: totalPrice,
         currency: 'BDT',
         tran_id: tran_id,
-        success_url: `http://localhost:5000/order/success/${tran_id}`,
-        fail_url: `http://localhost:5000/order/fail/${tran_id}`,
-        cancel_url: 'http://localhost:5000/order/cancel',
-        ipn_url: 'http://localhost:5000/order/ipn',
+        success_url: `${baseURL}/order/success/${tran_id}`,
+        fail_url: `${baseURL}/order/fail/${tran_id}`,
+        cancel_url: `${baseURL}/order/cancel`,
+        ipn_url: `${baseURL}/order/ipn`,
         shipping_method: 'NO',
         product_name: 'Computer',
         product_category: 'Electronic',
