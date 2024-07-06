@@ -6,10 +6,8 @@ const is_live = false;
 const { v4: uuidv4 } = require('uuid');
 const { ObjectId } = require('mongodb');
 const tran_id = new ObjectId().toString();
-const baseURL = process.env.NODE_ENV === 'production' 
-  ? 'https://accessories-arena-server.onrender.com' 
-  : 'http://localhost:5000';
-  console.log(baseURL)
+const baseURL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 router.post('/', async (req, res) => {
     const { userData, productData, totalPrice } = req.body;
     const { fullName, address, mobileNumber, email, district, city, area } = userData;
