@@ -23,8 +23,7 @@ const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@accesso
 
 // Mongoose connection
 mongoose.connect(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+// This is also deprecated
 }).then(() => {
   console.log('MongoDB connected');
   app.listen(port, () => {
