@@ -4,14 +4,14 @@ const router = express.Router();
 const Order = require('../models/order');
 const { v4: uuidv4 } = require('uuid');
 const { ObjectId } = require('mongodb');
-const is_live=false;
-// const is_live = process.env.NODE_ENV === 'production';
-// const BASE_URL = process.env.BASE_URL || 'http://localhost:5000';
-// const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
+// const is_live=false;
+const is_live = process.env.NODE_ENV === 'production';
+const BASE_URL = process.env.BASE_URL || 'http://localhost:5000';
+const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
 
 console.log("Environment Variables:");
-// console.log("BASE_URL:", BASE_URL);
-// console.log("CLIENT_URL:", CLIENT_URL);
+console.log("BASE_URL:", BASE_URL);
+console.log("CLIENT_URL:", CLIENT_URL);
 
 router.post('/', async (req, res) => {
     const { userData, productData, totalPrice } = req.body;
@@ -22,10 +22,10 @@ router.post('/', async (req, res) => {
         total_amount: totalPrice,
         currency: 'BDT',
         tran_id: tran_id,
-        success_url: `http://localhost:5000/order/success/${tran_id}`,
-        fail_url: `http://localhost:5000/order/fail/${tran_id}`,
-        cancel_url: `http://localhost:5000/order/cancel`,
-        ipn_url: `http://localhost:5000/order/ipn`,
+        success_url: `${BASE_URL}/order/success/${tran_id}`,
+        fail_url: `${BASE_URL}/order/fail/${tran_id}`,
+        cancel_url: `${BASE_URL}/order/cancel`,
+        ipn_url: `${BASE_URL}/order/ipn`,
         shipping_method: 'NO',
         product_name: 'Computer',
         product_category: 'Electronic',
@@ -94,7 +94,7 @@ router.post('/success/:tranId', async (req, res) => {
             { new: true }
         );
         if (order) {
-            const redirectUrl = `http://localhost:5173/payment/success/${tranId}`;
+            const redirectUrl = `${CLIENT_URL}/payment/success/${tranId}`;
             console.log("Redirecting to:", redirectUrl);
             res.redirect(redirectUrl);
         } else {
@@ -113,7 +113,7 @@ router.post('/fail/:tranId', async (req, res) => {
     try {
         const order = await Order.deleteOne({ transactionId: tranId });
         if (order) {
-            const redirectUrl = `http://localhost:5173/payment/fail/${tranId}`;
+            const redirectUrl = `${CLIENT_URL}/payment/fail/${tranId}`;
             console.log("Redirecting to:", redirectUrl);
             res.redirect(redirectUrl);
         } else {
